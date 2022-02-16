@@ -1,0 +1,46 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model Song {
+  id        String   @id @default(cuid())
+  title     String
+  artist    String
+  album     String
+  genre     String
+  year      Int
+  duration  Int
+  lyrics    Lyric[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Lyric {
+  id        String   @id @default(cuid())
+  type      Type
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  Song      Song?    @relation(fields: [songId], references: [id])
+  songId    String?
+}
+
+enum Type {
+  intro
+  outro
+  verse
+  chorus
+  bridge
+  hook
+  solo
+  pre_chorus
+  post_chorus
+}
